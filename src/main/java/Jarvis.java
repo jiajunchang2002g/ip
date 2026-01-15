@@ -18,7 +18,17 @@ public class Jarvis {
         ArrayList<Task> tasks = new ArrayList<>();
         while(true) {
             String input = scanner.nextLine();
-            switch(input) {
+            String command = input.split(" ")[0];
+            switch(command) {
+                case "mark":
+                    int indexToMark = Integer.parseInt(input.split(" ")[1]) - 1;
+                        tasks.get(indexToMark).markAsDone();
+                        System.out.println("Task marked as done.");
+                    break;
+                case "unmark":
+                    int indexToUnmark = Integer.parseInt(input.split(" ")[1]) - 1;
+                        tasks.get(indexToUnmark).markAsNotDone();
+                        System.out.println("Task marked as not done.");
                 case "list":
                     printTasks(tasks);
                     break;
