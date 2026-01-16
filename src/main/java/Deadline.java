@@ -4,7 +4,6 @@ public class Deadline extends Task {
         this.by = by;
     }
 
-    // Java date time library
     public String by;
 
     @Override
