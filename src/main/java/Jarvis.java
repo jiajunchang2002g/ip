@@ -48,6 +48,17 @@ public class Jarvis {
                 jarvis.scanner.close();
                 System.exit(0);
             }
+        }, DELETE("delete") {
+            @Override
+            public void handle(Jarvis jarvis, String arguments, ArrayList<Task> tasks) {
+                if (arguments.isEmpty()) {
+                    throw new IllegalArgumentException("Please specify the task number to delete.");
+                }
+                int index = Integer.parseInt(arguments) - 1;
+                Task removedTask = tasks.remove(index);
+                System.out.println("Deleted task: " + removedTask.toString());
+            }
+
         };
         
         private final String commandString;
@@ -106,6 +117,9 @@ public class Jarvis {
             throw new IllegalArgumentException("The description of an event cannot be empty.");
         }
         String[] parts = arguments.split(" /from | /to ");
+        if (parts.length < 3) {
+            throw new IllegalArgumentException("Please specify an event using '/from' and '/to'.");
+        }
         String description = parts[0];
         String from = parts[1];
         String to = parts[2];
@@ -118,6 +132,9 @@ public class Jarvis {
             throw new IllegalArgumentException("The description of a deadline cannot be empty.");
         }
         String[] parts = arguments.split(" /by ");
+        if (parts.length < 2) {
+            throw new IllegalArgumentException("Please specify a deadline using '/by'.");
+        }
         String description = parts[0];
         String by = parts[1];
         tasks.add(new Deadline(description, by));

@@ -1,20 +1,19 @@
 Welcome to Jarvis! How can I assist you today?
 Added ToDo: read book
+Added Deadline: submit report (by: 2023-10-01)
+Added Event: meeting (from: 10am to: 11am)
 Here are your tasks:
 1. [T][ ] read book
+2. [D][ ] submit report (by: 2023-10-01)
+3. [E][ ] meeting (from: 10am to: 11am)
 Task marked as done.
 Here are your tasks:
 1. [T][X] read book
+2. [D][ ] submit report (by: 2023-10-01)
+3. [E][ ] meeting (from: 10am to: 11am)
 Task marked as not done.
+Deleted task: [D][ ] submit report (by: 2023-10-01)
 Here are your tasks:
 1. [T][ ] read book
-Added Deadline: return book (by: Sunday)
-Here are your tasks:
-1. [T][ ] read book
-2. [D][ ] return book (by: Sunday)
-Added Event: project meeting (from: Mon 2pm to: 4pm)
-Here are your tasks:
-1. [T][ ] read book
-2. [D][ ] return book (by: Sunday)
-3. [E][ ] project meeting (from: Mon 2pm to: 4pm)
+2. [E][ ] meeting (from: 10am to: 11am)
 Goodbye! Have a great day!
