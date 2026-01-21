@@ -25,20 +25,22 @@ public class TaskStorage {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split("\\|"); // Split by '|'
-                String taskType = parts[0];
-                String taskDescription = parts[1];
+                // remove trailing spaces
+                String taskType = parts[0].trim();
+                String isDone = parts[1].trim();
+                String taskDescription = parts[2].trim();
                 Task task = new ToDo(taskDescription);
                 switch (taskType) {
                     case "T":
                     task = new ToDo(taskDescription);
                     break;
                     case "D":
-                    String by = parts[2];
+                    String by = parts[3].trim();
                     task = new Deadline(taskDescription, by);
                     break;
                     case "E":
-                    String from = parts[2];
-                    String to = parts[3];
+                    String from = parts[2].trim();
+                    String to = parts[3].trim();
                     task = new Event(taskDescription, from, to);
                     break;
                 }            

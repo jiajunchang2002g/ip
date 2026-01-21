@@ -39,7 +39,7 @@ public class Jarvis {
         }, LIST("list") {
             @Override
             public void handle(Jarvis jarvis, String arguments) {
-                jarvis.printTasks(jarvis.tasks);
+                jarvis.printTasks();
             }
         }, BYE("bye") {
             @Override
@@ -97,10 +97,10 @@ public class Jarvis {
         }
     }
 
-    public void printTasks(ArrayList<Task> tasks) {
+    public void printTasks() {
         System.out.println("Here are your tasks:");
-        for (Task task : tasks) {
-            System.out.println(task.toString());
+        for (Task task : this.tasks) {
+            System.out.println(task);
         }
     }
     public static void main(String[] args) throws IOException {
@@ -113,7 +113,7 @@ public class Jarvis {
             throw new IllegalArgumentException("The description of a todo cannot be empty.");
         }
         String description = arguments;
-        tasks.add(new ToDo(description));
+        this.tasks.add(new ToDo(description));
         System.out.println("Added ToDo: " + description);
     }
 
@@ -183,14 +183,12 @@ public class Jarvis {
                 throw new IllegalArgumentException("Invalid command");
             }
             commandType.handle(this, this.arguments);
+            TaskStorage.writeTasksToFile(TaskStorage.FILE_PATH, this.tasks);
+            
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
-        } 
-
-        try {
-            TaskStorage.writeTasksToFile(TaskStorage.FILE_PATH, this.tasks);
-        } catch (IOException e) {
-            System.out.println("Error writing tasks to file: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
         }
     }
 }
