@@ -1,5 +1,5 @@
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
+import java.io.*;
 
 public class Jarvis {
 
@@ -12,51 +12,56 @@ public class Jarvis {
     private enum CommandType {
         TODO("todo") {
             @Override
-            public void handle(Jarvis jarvis, String arguments, ArrayList<Task> tasks) {
-                jarvis.handleTodo(arguments, tasks);
+            public void handle(Jarvis jarvis, String arguments) {
+                jarvis.handleTodo(arguments);
             }
         }
         , DEADLINE("deadline") {
             @Override
-            public void handle(Jarvis jarvis, String arguments, ArrayList<Task> tasks) {
-                jarvis.handleDeadline(arguments, tasks);
+            public void handle(Jarvis jarvis, String arguments) {
+                jarvis.handleDeadline(arguments);
             }
         }, EVENT("event") {
             @Override
-            public void handle(Jarvis jarvis, String arguments, ArrayList<Task> tasks) {
-                jarvis.handleEvent(arguments, tasks);
+            public void handle(Jarvis jarvis, String arguments) {
+                jarvis.handleEvent(arguments);
             }
         }, MARK("mark") {
             @Override
-            public void handle(Jarvis jarvis, String arguments, ArrayList<Task> tasks) {
-                jarvis.handleMark(arguments, tasks);
+            public void handle(Jarvis jarvis, String arguments) {
+                jarvis.handleMark(arguments);
             }
         }, UNMARK("unmark") {
             @Override
-            public void handle(Jarvis jarvis, String arguments, ArrayList<Task> tasks) {
-                jarvis.handleUnmark(arguments, tasks);
+            public void handle(Jarvis jarvis, String arguments) {
+                jarvis.handleUnmark(arguments);
             }
         }, LIST("list") {
             @Override
-            public void handle(Jarvis jarvis, String arguments, ArrayList<Task> tasks) {
-                jarvis.printTasks(tasks);
+            public void handle(Jarvis jarvis, String arguments) {
+                jarvis.printTasks(jarvis.tasks);
             }
         }, BYE("bye") {
             @Override
-            public void handle(Jarvis jarvis, String arguments, ArrayList<Task> tasks) {
+            public void handle(Jarvis jarvis, String arguments) {
                 jarvis.printFarewellMessage();
                 jarvis.scanner.close();
                 System.exit(0);
             }
         }, DELETE("delete") {
             @Override
-            public void handle(Jarvis jarvis, String arguments, ArrayList<Task> tasks) {
+            public void handle(Jarvis jarvis, String arguments) {
                 if (arguments.isEmpty()) {
                     throw new IllegalArgumentException("Please specify the task number to delete.");
                 }
                 int index = Integer.parseInt(arguments) - 1;
-                Task removedTask = tasks.remove(index);
+                Task removedTask = jarvis.tasks.remove(index);
                 System.out.println("Deleted task: " + removedTask.toString());
+                try {
+                    TaskStorage.writeTasksToFile(TaskStorage.FILE_PATH, jarvis.tasks);
+                } catch (IOException e) {
+                    System.out.println("Error saving tasks: " + e.getMessage());
+                }
             }
 
         };
@@ -67,7 +72,7 @@ public class Jarvis {
             this.commandString = commandString;
         }
 
-        public abstract void handle(Jarvis jarvis, String arguments, ArrayList<Task> tasks);
+        public abstract void handle(Jarvis jarvis, String arguments);
 
         public static CommandType fromString(String commandString) {
             for (CommandType commandType : CommandType.values()) {
@@ -79,31 +84,31 @@ public class Jarvis {
         }
     }
 
-    public Jarvis() {
-        this.tasks = new ArrayList<>();
-        this.scanner = new Scanner(System.in);
+    public Jarvis() throws IOException {
+        this.scanner = new Scanner(System.in);        
+        this.tasks = TaskStorage.loadTasksFromFile(TaskStorage.FILE_PATH);
 
         printWelcomeMessage();
     }
 
     public void run() {
         while(true) {
-            this.handleInput(scanner, tasks);
+            this.handleInput(scanner);
         }
     }
 
     public void printTasks(ArrayList<Task> tasks) {
         System.out.println("Here are your tasks:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println((i + 1) + ". " + tasks.get(i).toString());
+        for (Task task : tasks) {
+            System.out.println(task.toString());
         }
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Jarvis jarvis = new Jarvis();
         jarvis.run();
     }
 
-    public void handleTodo(String arguments, ArrayList<Task> tasks) throws IllegalArgumentException {
+    public void handleTodo(String arguments) throws IllegalArgumentException {
         if (arguments.isEmpty()) {
             throw new IllegalArgumentException("The description of a todo cannot be empty.");
         }
@@ -112,7 +117,7 @@ public class Jarvis {
         System.out.println("Added ToDo: " + description);
     }
 
-    public void handleEvent(String arguments, ArrayList<Task> tasks) throws IllegalArgumentException {
+    public void handleEvent(String arguments) throws IllegalArgumentException {
         if (arguments.isEmpty()) {
             throw new IllegalArgumentException("The description of an event cannot be empty.");
         }
@@ -127,7 +132,7 @@ public class Jarvis {
         System.out.println("Added Event: " + description + " (from: " + from + " to: " + to + ")");
     }
 
-    public void handleDeadline(String arguments, ArrayList<Task> tasks) throws IllegalArgumentException {
+    public void handleDeadline(String arguments) throws IllegalArgumentException {
         if (arguments.isEmpty()) {
             throw new IllegalArgumentException("The description of a deadline cannot be empty.");
         }
@@ -149,7 +154,7 @@ public class Jarvis {
         System.out.println("Goodbye! Have a great day!");
     }
 
-    public void handleMark(String arguments, ArrayList<Task> tasks) throws IllegalArgumentException {
+    public void handleMark(String arguments) throws IllegalArgumentException {
         if (arguments.isEmpty()) {
             throw new IllegalArgumentException("Please specify the task number to mark.");
         }
@@ -158,7 +163,7 @@ public class Jarvis {
         System.out.println("Task marked as done.");
     }
 
-    public void handleUnmark(String arguments, ArrayList<Task> tasks) throws IllegalArgumentException {
+    public void handleUnmark(String arguments) throws IllegalArgumentException {
         if (arguments.isEmpty()) {
             throw new IllegalArgumentException("Please specify the task number to unmark.");
         }
@@ -167,18 +172,25 @@ public class Jarvis {
         System.out.println("Task marked as not done.");
     }
 
-    public void handleInput(Scanner scanner, ArrayList<Task> tasks) {
+    public void handleInput(Scanner scanner) {
         this.input = scanner.nextLine();
         this.command = input.split(" ")[0];
         this.arguments = input.substring(command.length()).trim();
+
         try {
             CommandType commandType = CommandType.fromString(this.command);
             if (commandType == null) {
                 throw new IllegalArgumentException("Invalid command");
             }
-            commandType.handle(this, this.arguments, tasks);
+            commandType.handle(this, this.arguments);
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
+        } 
+
+        try {
+            TaskStorage.writeTasksToFile(TaskStorage.FILE_PATH, this.tasks);
+        } catch (IOException e) {
+            System.out.println("Error writing tasks to file: " + e.getMessage());
         }
     }
 }
