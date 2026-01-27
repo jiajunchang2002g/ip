@@ -1,3 +1,4 @@
+package Storage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,8 +7,26 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import Task.Event;
+import Task.Task;
+import Task.ToDo;
+import Task.Deadline;
+
 public class TaskStorage {
     public static final String FILE_PATH = "data/tasks.txt";
+    private final String filePath;
+
+    public TaskStorage(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public ArrayList<Task> loadTasks() {
+        return loadTasksFromFile(filePath);
+    }
+
+    public void saveTasks(ArrayList<Task> tasks) throws IOException {
+        writeTasksToFile(filePath, tasks);
+    }
     
     public static ArrayList<Task> loadTasksFromFile(String filePath) {
         ArrayList<Task> loadedTasks = new ArrayList<>();
