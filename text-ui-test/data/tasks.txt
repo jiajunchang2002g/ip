@@ -1,2 +1,0 @@
-T | 0 | read book
-E | 0 | meeting | 10am | 11am

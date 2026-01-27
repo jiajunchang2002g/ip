@@ -5,7 +5,7 @@ import java.util.Scanner;
 import Task.Task;
 
 public class Ui {
-    private static final String LINE = "_______";
+    private static final String LINE = "================================";
     private final Scanner scanner;
 
     public Ui() {
