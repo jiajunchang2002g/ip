@@ -15,13 +15,13 @@ public class DeadlineCommand extends Command {
     }
 
     @Override
-    public void execute(ArrayList<Task> tasks, Ui ui, TaskStorage storage) throws DukeException {
+    public void execute(ArrayList<Task> tasks, Ui ui, TaskStorage storage) throws JarvisException {
         if (arguments.isEmpty()) {
-            throw new DukeException("The description of a deadline cannot be empty.");
+            throw new JarvisException("The description of a deadline cannot be empty.");
         }
         String[] parts = arguments.split(" /by ", 2);
         if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
-            throw new DukeException("Please specify a deadline using '/by'.");
+            throw new JarvisException("Please specify a deadline using '/by'.");
         }
         String description = parts[0].trim();
         String by = parts[1].trim();
@@ -30,11 +30,11 @@ public class DeadlineCommand extends Command {
         save(tasks, storage);
     }
 
-    private void save(ArrayList<Task> tasks, TaskStorage storage) throws DukeException {
+    private void save(ArrayList<Task> tasks, TaskStorage storage) throws JarvisException {
         try {
             storage.saveTasks(tasks);
         } catch (IOException e) {
-            throw new DukeException("Error saving tasks: " + e.getMessage());
+            throw new JarvisException("Error saving tasks: " + e.getMessage());
         }
     }
 }

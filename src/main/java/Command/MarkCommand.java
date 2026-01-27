@@ -14,36 +14,36 @@ public class MarkCommand extends Command {
     }
 
     @Override
-    public void execute(ArrayList<Task> tasks, Ui ui, TaskStorage storage) throws DukeException {
+    public void execute(ArrayList<Task> tasks, Ui ui, TaskStorage storage) throws JarvisException {
         int index = parseIndex(arguments, "Please specify the task number to mark.");
         if (index >= tasks.size()) {
-            throw new DukeException("Invalid task number.");
+            throw new JarvisException("Invalid task number.");
         }
         tasks.get(index).markAsDone();
         ui.showMessage("Task marked as done.");
         save(tasks, storage);
     }
 
-    private int parseIndex(String arg, String emptyMessage) throws DukeException {
+    private int parseIndex(String arg, String emptyMessage) throws JarvisException {
         if (arg.isEmpty()) {
-            throw new DukeException(emptyMessage);
+            throw new JarvisException(emptyMessage);
         }
         try {
             int index = Integer.parseInt(arg) - 1;
             if (index < 0) {
-                throw new DukeException("Invalid task number.");
+                throw new JarvisException("Invalid task number.");
             }
             return index;
         } catch (NumberFormatException e) {
-            throw new DukeException("Invalid task number.");
+            throw new JarvisException("Invalid task number.");
         }
     }
 
-    private void save(ArrayList<Task> tasks, TaskStorage storage) throws DukeException {
+    private void save(ArrayList<Task> tasks, TaskStorage storage) throws JarvisException {
         try {
             storage.saveTasks(tasks);
         } catch (IOException e) {
-            throw new DukeException("Error saving tasks: " + e.getMessage());
+            throw new JarvisException("Error saving tasks: " + e.getMessage());
         }
     }
 }

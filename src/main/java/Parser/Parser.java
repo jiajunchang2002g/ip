@@ -2,7 +2,7 @@ package Parser;
 import Command.Command;
 import Command.DeadlineCommand;
 import Command.DeleteCommand;
-import Command.DukeException;
+import Command.JarvisException;
 import Command.EventCommand;
 import Command.ExitCommand;
 import Command.ListCommand;
@@ -11,9 +11,9 @@ import Command.TodoCommand;
 import Command.UnmarkCommand;
 
 public class Parser {
-    public static Command parse(String fullCommand) throws DukeException {
+    public static Command parse(String fullCommand) throws JarvisException {
         if (fullCommand == null || fullCommand.trim().isEmpty()) {
-            throw new DukeException("Empty command.");
+            throw new JarvisException("Empty command.");
         }
 
         String trimmed = fullCommand.trim();
@@ -39,7 +39,7 @@ public class Parser {
         case "bye":
             return new ExitCommand();
         default:
-            throw new DukeException("Invalid command");
+            throw new JarvisException("Invalid command");
         }
     }
 }

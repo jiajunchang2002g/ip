@@ -15,9 +15,9 @@ public class TodoCommand extends Command {
     }
 
     @Override
-    public void execute(ArrayList<Task> tasks, Ui ui, TaskStorage storage) throws DukeException {
+    public void execute(ArrayList<Task> tasks, Ui ui, TaskStorage storage) throws JarvisException {
         if (description.isEmpty()) {
-            throw new DukeException("The description of a todo cannot be empty.");
+            throw new JarvisException("The description of a todo cannot be empty.");
         }
         Task task = new ToDo(description);
         tasks.add(task);
@@ -25,11 +25,11 @@ public class TodoCommand extends Command {
         save(tasks, storage);
     }
 
-    private void save(ArrayList<Task> tasks, TaskStorage storage) throws DukeException {
+    private void save(ArrayList<Task> tasks, TaskStorage storage) throws JarvisException {
         try {
             storage.saveTasks(tasks);
         } catch (IOException e) {
-            throw new DukeException("Error saving tasks: " + e.getMessage());
+            throw new JarvisException("Error saving tasks: " + e.getMessage());
         }
     }
 }

@@ -2,7 +2,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import Command.Command;
-import Command.DukeException;
+import Command.JarvisException;
 import Parser.Parser;
 import Storage.TaskStorage;
 import Task.Task;
@@ -30,7 +30,7 @@ public class Jarvis {
                 Command c = Parser.parse(fullCommand);
                 c.execute(tasks, ui, storage);
                 isExit = c.isExit();
-            } catch (DukeException e) {
+            } catch (JarvisException e) {
                 ui.showError(e.getMessage());
             } finally {
                 ui.showLine();
